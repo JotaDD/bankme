@@ -1,14 +1,14 @@
 -- CreateTable
-CREATE TABLE "Assignment" (
+CREATE TABLE "assignments" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "value" REAL NOT NULL,
     "emissionDate" DATETIME NOT NULL,
     "assignorId" TEXT NOT NULL,
-    CONSTRAINT "Assignment_assignorId_fkey" FOREIGN KEY ("assignorId") REFERENCES "Assignor" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "assignments_assignorId_fkey" FOREIGN KEY ("assignorId") REFERENCES "assignors" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
-CREATE TABLE "Assignor" (
+CREATE TABLE "assignors" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "document" TEXT NOT NULL,
     "email" TEXT NOT NULL,

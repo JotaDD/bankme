@@ -19,6 +19,8 @@ model Assignment {
   emissionDate DateTime
   assignor     Assignor @relation(fields: [assignorId], references: [id])
   assignorId   String
+
+  @@map("assignments")
 }
 
 model Assignor {
@@ -28,4 +30,6 @@ model Assignor {
   phone      String
   name       String
   Assignment Assignment[]
+
+  @@map("assignors")
 }
