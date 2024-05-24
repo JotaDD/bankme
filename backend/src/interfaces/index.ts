@@ -1,14 +1,14 @@
-export type Assignor = {
+export interface Assignor {
   id: string;
   document: string;
   email: string;
   phone: string;
   name: string;
-};
+}
 
-export type Payable = {
+export interface Payable {
   id?: string;
   value: number;
   emissionDate: Date;
   assignorId: string;
-};
+}

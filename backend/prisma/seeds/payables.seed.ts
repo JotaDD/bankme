@@ -1,5 +1,5 @@
 import { assignors } from './assignors.seed';
-import { Payable } from 'src/types';
+import { Payable } from 'src/interfaces';
 
 export const payables: Payable[] = [
   {

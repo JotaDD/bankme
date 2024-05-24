@@ -1,4 +1,4 @@
-import { Assignor } from 'src/types';
+import { Assignor } from 'src/interfaces';
 
 export const assignors: Assignor[] = [
   {
