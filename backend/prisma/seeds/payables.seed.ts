@@ -1,11 +1,5 @@
 import { assignors } from './assignors.seed';
-
-export type Payable = {
-  id?: string;
-  value: number;
-  emissionDate: Date;
-  assignorId: string;
-};
+import { Payable } from 'src/types';
 
 export const payables: Payable[] = [
   {

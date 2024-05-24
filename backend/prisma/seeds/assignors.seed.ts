@@ -1,10 +1,4 @@
-export type Assignor = {
-  id?: string;
-  document: string;
-  email: string;
-  phone: string;
-  name: string;
-};
+import { Assignor } from 'src/types';
 
 export const assignors: Assignor[] = [
   {
