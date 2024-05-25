@@ -1,7 +1,7 @@
 import { UUID } from 'crypto';
 
 export interface Assignor {
-  id: UUID;
+  id: string;
   document: string;
   email: string;
   phone: string;
