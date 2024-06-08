@@ -2,33 +2,34 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma/prisma.service';
 import { CreateAssignorDto } from './dto/create-assignor.dto';
 import { UpdateAssignorDto } from './dto/update-assignor.dto';
+import { Assignor } from 'src/interfaces';
 
 @Injectable()
 export class AssignorsService {
   constructor(private prisma: PrismaService) {}
 
-  create(createAssignorDto: CreateAssignorDto) {
-    return this.prisma.assignor.create({
+  async create(createAssignorDto: CreateAssignorDto) {
+    return await this.prisma.assignor.create({
       data: createAssignorDto,
     });
   }
 
-  findAll() {
-    return this.prisma.assignor.findMany();
+  async findAll() {
+    return await this.prisma.assignor.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.assignor.findUnique({ where: { id } });
+  async findOne(id: string) {
+    return await this.prisma.assignor.findUnique({ where: { id } });
   }
 
-  update(id: string, updateAssignorDto: UpdateAssignorDto) {
-    return this.prisma.assignor.update({
+  async update(id: string, updateAssignorDto: UpdateAssignorDto) {
+    return await this.prisma.assignor.update({
       where: { id },
       data: updateAssignorDto,
     });
   }
 
-  remove(id: string) {
-    return this.prisma.assignor.delete({ where: { id } });
+  async remove(id: string) {
+    await this.prisma.assignor.delete({ where: { id } });
   }
 }

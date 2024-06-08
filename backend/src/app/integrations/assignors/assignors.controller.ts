@@ -8,11 +8,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Assignor } from 'src/interfaces';
 import { AssignorsService } from './assignors.service';
 import { CreateAssignorDto } from './dto/create-assignor.dto';
 import { UpdateAssignorDto } from './dto/update-assignor.dto';
 import { AssignorEntity } from './entities/assignor.entity';
+import { AssignorDto } from './dto/assignor.dto';
 
 @Controller()
 @ApiTags('Assignors')
@@ -23,20 +23,20 @@ export class AssignorsController {
   @ApiCreatedResponse({ status: 201, type: AssignorEntity })
   async create(
     @Body() createAssignorDto: CreateAssignorDto,
-  ): Promise<Assignor> {
-    return this.assignorsService.create(createAssignorDto);
+  ): Promise<AssignorDto> {
+    return await this.assignorsService.create(createAssignorDto);
   }
 
   @Get()
   @ApiOkResponse({ isArray: true, type: AssignorEntity })
-  async findAll(): Promise<Assignor[]> {
-    return this.assignorsService.findAll();
+  async findAll(): Promise<CreateAssignorDto[]> {
+    return await this.assignorsService.findAll();
   }
 
   @Get(':id')
   @ApiOkResponse({ type: AssignorEntity })
-  async findOne(@Param('id') id: string): Promise<Assignor> {
-    return this.assignorsService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<void> {
+    return await this.assignorsService.findOne(id);
   }
 
   @Patch(':id')
@@ -44,13 +44,13 @@ export class AssignorsController {
   async update(
     @Param('id') id: string,
     @Body() updateAssignorDto: UpdateAssignorDto,
-  ): Promise<Assignor> {
-    return this.assignorsService.update(id, updateAssignorDto);
+  ): Promise<void> {
+    return await this.assignorsService.update(id, updateAssignorDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: AssignorEntity })
-  async remove(@Param('id') id: string): Promise<Assignor> {
-    return this.assignorsService.remove(id);
+  async remove(@Param('id') id: string): Promise<void> {
+    return await this.assignorsService.remove(id);
   }
 }
