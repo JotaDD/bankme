@@ -7,13 +7,13 @@ export class CreateAssignorDto {
   @IsNotEmpty()
   @MaxLength(30)
   @Transform(({ value }) => value.replace(/\D/g, ''))
-  document: string;
+  readonly document: string;
 
   @ApiProperty({ example: 'johnny@test.com' })
   @IsNotEmpty()
   @IsEmail({}, { message: 'email must be valid' })
   @MaxLength(140)
-  email: string;
+  readonly email: string;
 
   @ApiProperty({
     example: '11999998888',
@@ -22,10 +22,10 @@ export class CreateAssignorDto {
   @IsNotEmpty()
   @MaxLength(20)
   @Transform(({ value }) => value.replace(/\D/g, ''))
-  phone: string;
+  readonly phone: string;
 
   @ApiProperty({ example: 'Johnny Test' })
   @IsNotEmpty()
   @MaxLength(140)
-  name: string;
+  readonly name: string;
 }
