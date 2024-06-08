@@ -1,3 +1,4 @@
+import { UUID } from 'crypto';
 import { AssignorsService } from '../../assignors.service';
 import { CreateAssignorDto } from '../../dto/create-assignor.dto';
 import { UpdateAssignorDto } from '../../dto/update-assignor.dto';
@@ -6,21 +7,21 @@ import { v4 as uuid } from 'uuid';
 
 export const mockAssignorList: AssignorEntity[] = [
   {
-    id: uuid() as string,
+    id: uuid() as UUID,
     document: '12345678901',
     email: 'johnny@tes.com',
     phone: '11999998888',
     name: 'Johnny Test',
   },
   {
-    id: uuid() as string,
+    id: uuid() as UUID,
     document: '12345678902',
     email: 'mary@test.com',
     phone: '11999998889',
     name: 'Mary Test',
   },
   {
-    id: uuid() as string,
+    id: uuid() as UUID,
     document: '12345678903',
     email: 'susan@test.com',
     phone: '11999998890',
@@ -38,19 +39,19 @@ export const mockAssignorsService = {
     findAll: jest.fn().mockResolvedValue(mockAssignorList),
     findOne: jest
       .fn()
-      .mockImplementation((id: string) =>
+      .mockImplementation((id: UUID) =>
         Promise.resolve(
           mockAssignorList.find((assignor) => assignor.id === id),
         ),
       ),
     update: jest
       .fn()
-      .mockImplementation((id: string, dto: UpdateAssignorDto) =>
+      .mockImplementation((id: UUID, dto: UpdateAssignorDto) =>
         Promise.resolve({ id, ...dto }),
       ),
     remove: jest
       .fn()
-      .mockImplementation((id: string) =>
+      .mockImplementation((id: UUID) =>
         Promise.resolve(
           mockAssignorList.find((assignor) => assignor.id === id),
         ),
