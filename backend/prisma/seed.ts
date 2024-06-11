@@ -1,6 +1,6 @@
 // Usage: yarn prisma db seed --preview-feature
 import { PrismaClient } from '@prisma/client';
-import { payables, assignors } from './seeds';
+import { payables, assignors, user } from './seeds';
 
 const prisma = new PrismaClient();
 
@@ -17,6 +17,11 @@ async function main() {
       data: payable,
     });
   }
+
+  //Seed user
+  await prisma.user.create({
+    data: user,
+  });
 }
 
 main()
