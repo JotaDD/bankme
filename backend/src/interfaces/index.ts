@@ -14,3 +14,9 @@ export interface Payable {
   emissionDate: Date;
   assignorId: UUID;
 }
+
+export interface User {
+  id?: string;
+  login: string;
+  password: string;
+}
