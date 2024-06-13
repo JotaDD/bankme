@@ -6,15 +6,17 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { AssignorsService } from './assignors.service';
 import { CreateAssignorDto } from './dto/create-assignor.dto';
 import { UpdateAssignorDto } from './dto/update-assignor.dto';
 import { AssignorEntity } from './entities/assignor.entity';
-import { AssignorDto } from './dto/assignor.dto';
 
 @Controller()
+@UseGuards(JwtAuthGuard)
 @ApiTags('Assignors')
 export class AssignorsController {
   constructor(private readonly assignorsService: AssignorsService) {}
@@ -23,7 +25,7 @@ export class AssignorsController {
   @ApiCreatedResponse({ status: 201, type: AssignorEntity })
   async create(
     @Body() createAssignorDto: CreateAssignorDto,
-  ): Promise<AssignorDto> {
+  ): Promise<CreateAssignorDto> {
     return await this.assignorsService.create(createAssignorDto);
   }
 
@@ -35,7 +37,7 @@ export class AssignorsController {
 
   @Get(':id')
   @ApiOkResponse({ type: AssignorEntity })
-  async findOne(@Param('id') id: string): Promise<void> {
+  async findOne(@Param('id') id: string): Promise<CreateAssignorDto> {
     return await this.assignorsService.findOne(id);
   }
 
@@ -44,7 +46,7 @@ export class AssignorsController {
   async update(
     @Param('id') id: string,
     @Body() updateAssignorDto: UpdateAssignorDto,
-  ): Promise<void> {
+  ): Promise<CreateAssignorDto> {
     return await this.assignorsService.update(id, updateAssignorDto);
   }
 
