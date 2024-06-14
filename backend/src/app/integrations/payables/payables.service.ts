@@ -8,23 +8,26 @@ import { CreatePayableDto } from './dto/create-payable.dto';
 export class PayablesService {
   constructor(private prisma: PrismaService) {}
 
-  create(createPayableDto: CreatePayableDto) {
-    return this.prisma.payable.create({ data: createPayableDto });
+  async create(createPayableDto: CreatePayableDto) {
+    return await this.prisma.payable.create({ data: createPayableDto });
   }
 
-  findAll() {
-    return this.prisma.payable.findMany();
+  async findAll() {
+    return await this.prisma.payable.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.payable.findUnique({ where: { id } });
+  async findOne(id: string) {
+    return await this.prisma.payable.findUnique({ where: { id } });
   }
 
-  update(id: number, updatePayableDto: UpdatePayableDto) {
-    return `This action updates a #${id} payable ${updatePayableDto}`;
+  async update(id: string, updatePayableDto: UpdatePayableDto) {
+    return await this.prisma.payable.update({
+      where: { id: id },
+      data: updatePayableDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} payable`;
+  async remove(id: string) {
+    await this.prisma.payable.delete({ where: { id } });
   }
 }

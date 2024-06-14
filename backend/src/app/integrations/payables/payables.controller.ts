@@ -1,16 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { PayablesService } from './payables.service';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePayableDto } from './dto/create-payable.dto';
 import { UpdatePayableDto } from './dto/update-payable.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { PayableEntity } from './entities/payable.entity';
+import { PayablesService } from './payables.service';
 
 @Controller()
 @ApiTags('Payables')
@@ -18,27 +19,36 @@ export class PayablesController {
   constructor(private readonly payablesService: PayablesService) {}
 
   @Post()
-  create(@Body() createPayableDto: CreatePayableDto) {
-    return this.payablesService.create(createPayableDto);
+  @ApiCreatedResponse({ status: 201, type: PayableEntity })
+  async create(
+    @Body() createPayableDto: CreatePayableDto,
+  ): Promise<CreatePayableDto> {
+    return await this.payablesService.create(createPayableDto);
   }
 
   @Get()
-  findAll() {
-    return this.payablesService.findAll();
+  async findAll(): Promise<CreatePayableDto[]> {
+    return await this.payablesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.payablesService.findOne(id);
+  @ApiOkResponse({ type: PayableEntity })
+  async findOne(@Param('id') id: string): Promise<CreatePayableDto> {
+    return await this.payablesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePayableDto: UpdatePayableDto) {
-    return this.payablesService.update(+id, updatePayableDto);
+  @ApiOkResponse({ type: PayableEntity })
+  update(
+    @Param('id') id: string,
+    @Body() updatePayableDto: UpdatePayableDto,
+  ): Promise<UpdatePayableDto> {
+    return this.payablesService.update(id, updatePayableDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.payablesService.remove(+id);
+  @ApiOkResponse({ type: PayableEntity })
+  async remove(@Param('id') id: string): Promise<void> {
+    return await this.payablesService.remove(id);
   }
 }
