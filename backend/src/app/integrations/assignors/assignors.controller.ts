@@ -46,7 +46,7 @@ export class AssignorsController {
   async update(
     @Param('id') id: string,
     @Body() updateAssignorDto: UpdateAssignorDto,
-  ): Promise<CreateAssignorDto> {
+  ): Promise<UpdateAssignorDto> {
     return await this.assignorsService.update(id, updateAssignorDto);
   }
 
