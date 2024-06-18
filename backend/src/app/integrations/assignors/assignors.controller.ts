@@ -52,7 +52,7 @@ export class AssignorsController {
 
   @Delete(':id')
   @ApiOkResponse({ type: AssignorEntity })
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id') id: string) {
     return await this.assignorsService.remove(id);
   }
 }

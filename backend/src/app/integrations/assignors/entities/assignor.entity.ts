@@ -10,7 +10,7 @@ export class AssignorEntity implements Assignor {
     format: 'uuid',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
-  id: UUID;
+  id: string;
 
   @ApiProperty({ nullable: false, required: true, example: '12345678901' })
   document: string;

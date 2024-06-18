@@ -6,10 +6,11 @@ import { AssignorsController } from './assignors.controller';
 import { AssignorsService } from './assignors.service';
 import {
   mockAssignorList,
-  mockAssignorsService,
   mockCreateAssignorDto,
   mockUpdateAssignorDto,
 } from './tests/mocks';
+import { HttpStatus } from '@nestjs/common';
+import { mockAssignorsService } from './tests/mocks/services/assignor.service.mock';
 
 describe('AssignorsController', () => {
   let controller: AssignorsController;
@@ -34,24 +35,23 @@ describe('AssignorsController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should create a new assignor and return it with a 201 status code and an ID', async () => {
+  describe('/POST - CREATE', () => {
+    it('SUCCESS 201 - should create a new Assignor and return it', async () => {
       const response = {
         id: uuid(),
         ...mockCreateAssignorDto,
       };
 
       jest.spyOn(service, 'create').mockResolvedValue(response);
-      expect(controller.create(mockCreateAssignorDto));
-      expect(service.create).toHaveBeenCalledWith(mockCreateAssignorDto);
+
       expect(controller.create(mockCreateAssignorDto)).resolves.toEqual(
         response,
       );
     });
   });
 
-  describe('findAll', () => {
-    it('should return an array of assignors', async () => {
+  describe('/GET - FIND ALL', () => {
+    it('SUCCESS 200 - should return a list of all Assignors ', async () => {
       const allAssignors = await controller.findAll();
 
       jest.spyOn(controller, 'findAll').mockResolvedValue(mockAssignorList);
@@ -60,8 +60,8 @@ describe('AssignorsController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should return an assignor by id', async () => {
+  describe('/GET - FIND ONE', () => {
+    it('SUCCESS 200 - should return one Assignor', async () => {
       const id = mockAssignorList[0].id;
       const assignor = mockAssignorList[0];
 
@@ -72,8 +72,8 @@ describe('AssignorsController', () => {
     });
   });
 
-  describe('update', () => {
-    it('should update an assignor by id', async () => {
+  describe('/PATCH - UPDATE', () => {
+    it('SUCCESS 200 - should return the updated Assignor with the new info', async () => {
       const id = mockAssignorList[0].id;
 
       const updatedAssignor = await controller.update(
@@ -89,15 +89,18 @@ describe('AssignorsController', () => {
     });
   });
 
-  describe('remove', () => {
-    it('should remove an assignor by id', async () => {
+  describe('/DELETE - REMOVE', () => {
+    it('SUCCESS 200 - should return a status 200 and a message that it was successfully', async () => {
       const id = mockAssignorList[0].id;
-      const assignor = mockAssignorList[0];
+      const response = {
+        "statusCode": HttpStatus.OK,
+        "message": "Cedente removido com sucesso!"
+      }
 
       const removedAssignor = await controller.remove(id);
-      jest.spyOn(controller, 'remove').mockResolvedValue(assignor);
+      jest.spyOn(controller, 'remove').mockResolvedValue(response);
 
-      expect(removedAssignor).toEqual(assignor);
+      expect(removedAssignor).toEqual(response);
     });
   });
 });

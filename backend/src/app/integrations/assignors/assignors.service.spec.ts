@@ -1,136 +1,138 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AssignorsService } from './assignors.service';
-import { PrismaService } from '../../../database/prisma/prisma.service';
 import { v4 as uuid } from 'uuid';
-import {
-  mockAssignorList,
-  mockAssignorsService,
-  mockCreateAssignorDto,
-  mockUpdateAssignorDto,
-} from './tests/mocks';
-import { UpdateAssignorDto } from './dto/update-assignor.dto';
+import { PrismaService } from '../../../database/prisma/prisma.service';
+import { AssignorsService } from './assignors.service';
+
+import { AssignorAlreadyExistsException, AssignorNotFoundException } from './exceptions';
+import { mockAssignorList, mockCreateAssignorDto, mockUpdateAssignorDto } from './tests/mocks';
+import { mockPrismaService } from './tests/mocks/services/prisma.service.mock';
 
 describe('AssignorsService', () => {
   let service: AssignorsService;
-
-  let prismaServiceMock = {
-    provide: PrismaService,
-    useValue: {
-      assignor: {
-        create: jest.fn().mockResolvedValue({
-          id: uuid(),
-          ...mockCreateAssignorDto,
-        }),
-        findMany: jest.fn().mockResolvedValue(mockAssignorList),
-        findUnique: jest.fn().mockResolvedValue(mockAssignorList[0]),
-        update: jest.fn().mockResolvedValue({
-          id: uuid(),
-          ...mockUpdateAssignorDto,
-        }),
-        delete: jest.fn().mockResolvedValue(mockAssignorList[0]),
-      },
-    },
-  };
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AssignorsService, prismaServiceMock],
+      providers: [
+        AssignorsService,
+        { provide: PrismaService, useValue: mockPrismaService },
+      ],
     }).compile();
 
     service = module.get<AssignorsService>(AssignorsService);
-    prismaServiceMock = module.get<PrismaService>(PrismaService);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
-  describe('create', () => {
-    it('should create a new assignor', async () => {
-      const response = {
+  it('should be defined', () => {
+    expect(module).toBeDefined();
+    expect(service).toBeDefined();
+    expect(prismaService).toBeDefined();
+  });
+
+  describe('/POST - CREATE', () => {
+    it('SUCCESS - should create a new assignor', async () => {
+      const newAssignor = {
         id: uuid(),
-        ...mockCreateAssignorDto,
-      };
+        ...mockCreateAssignorDto
+      }
 
-      jest.spyOn(service, 'create').mockResolvedValue(response);
+      jest.spyOn(prismaService.assignor, 'create').mockResolvedValue(newAssignor);
 
-      const result = await service.create(mockCreateAssignorDto);
+      expect(service.create(mockCreateAssignorDto)).resolves.toEqual(newAssignor);
+    });
 
-      expect(service.create).toHaveBeenCalledWith(mockCreateAssignorDto);
-      expect(result).toEqual(response);
+    it('FAILURE - ALREADY EXISTS - should throw an error if assignor already exists', async () => {
+      jest.spyOn(prismaService.assignor, 'create').mockRejectedValue(new AssignorAlreadyExistsException());
+
+      expect(service.create(mockCreateAssignorDto)).rejects.toThrow('Cedente já cadastrado');
+      expect(service.create(mockCreateAssignorDto)).rejects.toThrow(AssignorAlreadyExistsException);
     });
   });
 
-  // describe('create', () => {
-  //   it('should create a new assignor', async () => {
-  //     const response = {
-  //       id: uuid(),
-  //       ...mockCreateAssignorDto,
-  //     };
+  describe('/GET - ALL ASSIGNORS', () => {
+    it('SUCCESS - should return a list of all assignors', async () => {
 
-  //     jest.spyOn(service, 'create').mockResolvedValue(response);
+      jest.spyOn(prismaService.assignor, 'findMany').mockResolvedValue(mockAssignorList);
 
-  //     const result = await service.create(mockCreateAssignorDto);
+      const allAssignors = await service.findAll();
 
-  //     expect(service.create).toHaveBeenCalledWith(mockCreateAssignorDto);
-  //     expect(result).toEqual(response);
-  //   });
-  // });
+      expect(allAssignors).toEqual(mockAssignorList);
+    });
+  })
 
-  // describe('findAll', () => {
-  //   it('should return all assignors', async () => {
-  //     jest.spyOn(service, 'findAll').mockResolvedValue(mockAssignorList);
+  describe('/GET - GET BY ID', () => {
+    it('SUCCESS - should return one assignor', async () => {
+      const id = mockAssignorList[0].id;
+      const assignor = mockAssignorList[0]
 
-  //     const result = await service.findAll();
+      jest.spyOn(prismaService.assignor, 'findUnique').mockResolvedValue(assignor)
+      expect(await service.findOne(id)).toEqual(assignor)
+    })
 
-  //     expect(service.findAll).toHaveBeenCalled();
-  //     expect(result).toEqual(mockAssignorList);
-  //   });
-  // });
+    it('FAILURE - should return one assignor', async () => {
+      const id = '1';
 
-  // describe('findOne', () => {
-  //   it('should return an assignor by id', async () => {
-  //     const id = mockAssignorList[0].id;
-  //     const assignor = mockAssignorList[0];
+      jest.spyOn(prismaService.assignor, 'findUnique').mockResolvedValue(null)
+      expect(service.findOne(id)).rejects.toThrow(AssignorNotFoundException)
+    })
+  })
 
-  //     jest.spyOn(service, 'findOne').mockResolvedValue(assignor);
+  describe('/PATCH - UPDATE', () => {
+    it('SUCCESS - should return the updated assignor with the new info', async () => {
+      const id = mockAssignorList[0].id;
 
-  //     const result = await service.findOne(id);
+      jest.spyOn(service, 'validateIfAssignorIsFound').mockResolvedValue(true);
+      jest.spyOn(prismaService.assignor, 'update').mockResolvedValue(mockAssignorList[0]);
 
-  //     expect(service.findOne).toHaveBeenCalledWith(id);
-  //     expect(result).toEqual(assignor);
-  //   });
-  // });
 
-  // describe('update', () => {
-  //   it('should update an assignor by id', async () => {
-  //     const id = mockAssignorList[0].id;
+      expect(await service.update(id, mockUpdateAssignorDto)).toEqual(mockAssignorList[0]);
 
-  //     const updatedAssignor = await service.update(id, mockUpdateAssignorDto);
+    });
 
-  //     jest.spyOn(service, 'update').mockResolvedValue(updatedAssignor);
+    it('FAILURE - should throw an error if assignor is not found', async () => {
+      const id = '1';
 
-  //     const result = await service.update(id, updatedAssignor);
+      jest.spyOn(prismaService.assignor, 'update').mockRejectedValue(new AssignorNotFoundException());
 
-  //     expect(service.update).toHaveBeenCalledWith(id, updatedAssignor);
-  //     expect(result).toEqual({
-  //       id,
-  //       ...mockUpdateAssignorDto,
-  //     } as UpdateAssignorDto);
-  //   });
-  // });
+      expect(service.update(id, mockCreateAssignorDto)).rejects.toThrow('Cedente não encontrado');
+      expect(service.update(id, mockCreateAssignorDto)).rejects.toThrow(AssignorNotFoundException);
+    });
 
-  // describe('remove', () => {
-  //   it('should remove an assignor by id', async () => {
-  //     const id = mockAssignorList[0].id;
-  //     const assignor = mockAssignorList[0];
+    it('FAILURE - should throw an error if assignor already exists', async () => {
+      const id = '0f732e1a-e3fd - 4da8 - 8087 - 40a83bef4f9e'
+      const mockUpdate = {
+        document: '12345678902',
+        ...mockUpdateAssignorDto
+      }
 
-  //     const removedAssignor = await service.remove(id);
 
-  //     jest.spyOn(service, 'remove').mockResolvedValue(assignor);
+      jest.spyOn(service, 'validateIfAssignorIsFound').mockResolvedValue(true);
+      jest.spyOn(prismaService.assignor, 'update').mockRejectedValue(new AssignorAlreadyExistsException());
 
-  //     expect(service.remove).toHaveBeenCalledWith(id);
-  //     expect(removedAssignor).toEqual(assignor);
-  //   });
-  // });
+      expect(service.update(id, mockUpdate)).rejects.toThrow('Cedente já cadastrado!');
+      expect(service.update(id, mockUpdate)).rejects.toThrow(AssignorAlreadyExistsException);
+    });
+  })
+
+  describe('/DELETE - DELETE', () => {
+    it('SUCCESS - should return a success message if assignor is deleted', async () => {
+      const id = mockAssignorList[0].id;
+
+      jest.spyOn(prismaService.assignor, 'delete');
+
+      expect(await service.remove(id)).toEqual({ statusCode: 200, message: 'Cedente removido com sucesso!' });
+    })
+    it('FAILURE - should throw an error if assignor is not found', async () => {
+      const id = '1';
+
+      jest.spyOn(prismaService.assignor, 'delete').mockRejectedValue(new AssignorNotFoundException());
+
+      expect(service.remove(id)).rejects.toThrow('Cedente não encontrado!');
+      expect(service.remove(id)).rejects.toThrow(AssignorNotFoundException);
+    })
+  })
 });
