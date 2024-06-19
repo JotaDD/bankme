@@ -3,12 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePayableDto } from './dto/create-payable.dto';
+import { PayableDto } from './dto/payable.dto';
 import { UpdatePayableDto } from './dto/update-payable.dto';
 import { PayableEntity } from './entities/payable.entity';
 import { PayablesService } from './payables.service';
@@ -16,24 +18,25 @@ import { PayablesService } from './payables.service';
 @Controller()
 @ApiTags('Payables')
 export class PayablesController {
-  constructor(private readonly payablesService: PayablesService) {}
+  constructor(private readonly payablesService: PayablesService) { }
 
   @Post()
-  @ApiCreatedResponse({ status: 201, type: PayableEntity })
+  @ApiCreatedResponse({ description: 'Sucesso', type: PayableDto })
   async create(
     @Body() createPayableDto: CreatePayableDto,
-  ): Promise<CreatePayableDto> {
+  ): Promise<PayableDto> {
     return await this.payablesService.create(createPayableDto);
   }
 
   @Get()
-  async findAll(): Promise<CreatePayableDto[]> {
+  @ApiOkResponse({ type: [PayableDto] })
+  async findAll(): Promise<PayableDto[]> {
     return await this.payablesService.findAll();
   }
 
   @Get(':id')
   @ApiOkResponse({ type: PayableEntity })
-  async findOne(@Param('id') id: string): Promise<CreatePayableDto> {
+  async findOne(@Param('id') id: string): Promise<PayableDto> {
     return await this.payablesService.findOne(id);
   }
 
@@ -42,13 +45,13 @@ export class PayablesController {
   update(
     @Param('id') id: string,
     @Body() updatePayableDto: UpdatePayableDto,
-  ): Promise<UpdatePayableDto> {
+  ): Promise<PayableDto> {
     return this.payablesService.update(id, updatePayableDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: PayableEntity })
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id') id: string): Promise<{ statusCode: HttpStatus, message: string }> {
     return await this.payablesService.remove(id);
   }
 }
