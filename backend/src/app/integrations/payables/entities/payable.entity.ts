@@ -10,7 +10,7 @@ export class PayableEntity implements Payable {
     format: 'uuid',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
-  id?: UUID;
+  id: UUID;
 
   @ApiProperty({
     nullable: false,
@@ -20,8 +20,12 @@ export class PayableEntity implements Payable {
   })
   value: number;
 
-  @ApiProperty({ nullable: false, required: true, example: 'johnny@test.com' })
-  emissionDate: Date;
+  @ApiProperty({
+    example: '2024-04-21T19:30',
+    description: "Se o campo estiver vazio, a data de emissão será o momento que o recebível for cadastrado.",
+    nullable: false,
+    required: true
+  }) emissionDate: Date;
 
   @ApiProperty({
     nullable: false,
