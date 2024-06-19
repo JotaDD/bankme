@@ -18,7 +18,7 @@ export class CreateAssignorDto {
 
   @ApiProperty({
     example: '11999998888',
-    description: 'Only numbers, the api will remove all non-numeric characters',
+    description: 'Apenas números, a api vai remover qualquer caractere não-numérico',
   })
   @IsNotEmpty({ message: MessageHelper.NOT_EMPTY })
   @MaxLength(20, { message: MessageHelper.MAX_TWENTY })
