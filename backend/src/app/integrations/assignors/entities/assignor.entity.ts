@@ -22,7 +22,7 @@ export class AssignorEntity implements Assignor {
     nullable: false,
     required: true,
     example: '11999998888',
-    description: 'Only numbers, the api will remove all non-numeric characters',
+    description: 'Apenas números, a api vai remover qualquer caractere não-numérico',
   })
   phone: string;
 

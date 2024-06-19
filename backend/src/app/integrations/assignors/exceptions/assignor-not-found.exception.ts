@@ -5,3 +5,5 @@ export class AssignorNotFoundException extends HttpException {
     super('Cedente não encontrado!', 404);
   }
 }
+
+
