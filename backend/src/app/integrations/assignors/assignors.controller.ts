@@ -8,7 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { AssignorsService } from './assignors.service';
 import { CreateAssignorDto } from './dto/create-assignor.dto';
@@ -16,10 +16,11 @@ import { UpdateAssignorDto } from './dto/update-assignor.dto';
 import { AssignorEntity } from './entities/assignor.entity';
 
 @Controller()
-@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @ApiTags('Assignors')
+@UseGuards(JwtAuthGuard)
 export class AssignorsController {
-  constructor(private readonly assignorsService: AssignorsService) {}
+  constructor(private readonly assignorsService: AssignorsService) { }
 
   @Post()
   @ApiCreatedResponse({ status: 201, type: AssignorEntity })

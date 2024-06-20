@@ -7,16 +7,20 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePayableDto } from './dto/create-payable.dto';
 import { PayableDto } from './dto/payable.dto';
 import { UpdatePayableDto } from './dto/update-payable.dto';
 import { PayableEntity } from './entities/payable.entity';
 import { PayablesService } from './payables.service';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @Controller()
 @ApiTags('Payables')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class PayablesController {
   constructor(private readonly payablesService: PayablesService) { }
 
