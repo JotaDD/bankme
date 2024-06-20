@@ -11,6 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Bankme Docs')
     .setDescription('The Bankme API description')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
